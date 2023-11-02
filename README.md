@@ -4,8 +4,10 @@ This is a simple Bash script for creating backups of your MySQL database. It all
 
 ## 🛠️ Usage
 
+### 💾 Backup script
+
 ```shell
-Usage: ./backup.sh -d <db_name> [-P <db_port>] [-h <db_host>] [-u <db_username>] [-p <db_password>]
+Usage: ./backup-db.sh -d <db_name> [-P <db_port>] [-h <db_host>] [-u <db_username>] [-p <db_password>]
 ```
 - -h: Database host (default is "localhost")
 - -P: Database port (default is "3306")
@@ -15,16 +17,27 @@ Usage: ./backup.sh -d <db_name> [-P <db_port>] [-h <db_host>] [-u <db_username>]
 
 **Note:** If the script is provided with the `-h` option and no `-u` nor `-p` options it will load credentials from a config file named db_name.config. The config file should have the same name as the provided database name.
 
+### 🗑️ Cleanup script
+
+```shell
+Usage: ./cleanup-backup.sh -d <db_name> -a <age_in_days>
+```
+- d: Database name (required)
+- a: Age in days (required)
+
 ## 🔎 Features
 - 📅 Automatic date-based folder for backups.
 - 📂 Individual SQL files for each table.
 - 👀 Backup of views, stored procedures, and events.
 - 📝 Detailed logs of the backup process.
+- 🗑️ Cleanup of old backup folders.
 
 ## 🧰 Prerequisites
 - Make sure you have MySQL client tools installed.
 
 ## 🚴 Usage
+
+### 💾 Backup script
 
 1. Make the script executable:
 ```shell
@@ -38,6 +51,20 @@ chmod +x backup-db.sh
 4. Inside the folder, you will find SQL files for tables, views, stored procedures, and events.
 5. The script logs its activity and errors to a file named `backup.log` within the backup folder.
 6. Your database backup is now complete! 🎉
+
+### 🗑️ Cleanup script
+
+1. Make the script executable:
+```shell
+chmod +x cleanup-backup.sh
+```
+2. Run the cleanup script with the required options:
+```shell
+./cleanup-backup.sh -d my_database -a 15
+```
+3. The script will delete subfolders in the directory `./my_database` that are older than 15 days.
+4. The cleanup process is logged to the console.
+5. Cleanup is complete! 🗑️
 
 ## 📜 License
 

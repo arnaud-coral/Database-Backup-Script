@@ -5,13 +5,15 @@ This is a simple Bash script for creating backups of your MySQL database. It all
 ## 🛠️ Usage
 
 ```shell
-Usage: ./backup.sh -h <db_host> -P <db_port> -d <database_name> -u <db_username> -p <db_password>
+Usage: ./backup.sh -d <db_name> [-P <db_port>] [-h <db_host>] [-u <db_username>] [-p <db_password>]
 ```
 - -h: Database host (default is "localhost")
 - -P: Database port (default is "3306")
 - -d: Database name (required)
 - -u: Database username (required)
 - -p: Database password (required)
+
+**Note:** If the script is provided with the `-h` option and no `-u` nor `-p` options it will load credentials from a config file named db_name.config. The config file should have the same name as the provided database name.
 
 ## 🔎 Features
 - 📅 Automatic date-based folder for backups.
@@ -26,11 +28,11 @@ Usage: ./backup.sh -h <db_host> -P <db_port> -d <database_name> -u <db_username>
 
 1. Make the script executable:
 ```shell
-chmod +x backup.sh
+chmod +x backup-db.sh
 ```
 2. Run the script with the required options:
 ```shell
-./backup.sh -d my_database -u my_user -p my_password
+./backup-db.sh -d my_database -u my_user -p my_password
 ```
 3. The script will create a backup folder with timestamp, e.g., `my_database/2023-11-02-10-30-45`.
 4. Inside the folder, you will find SQL files for tables, views, stored procedures, and events.

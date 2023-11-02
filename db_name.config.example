@@ -1,0 +1,5 @@
+DB_HOST=localbost
+DB_PORT=3306
+DB_NAME=db_name
+DB_USER=db_username
+DB_PASS=db_password

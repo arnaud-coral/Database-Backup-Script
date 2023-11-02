@@ -2,13 +2,16 @@
 
 # Function to display usage information
 usage() {
-  echo "Usage: $0 -h <db_host> -P <db_port> -d <database_name> -u <db_username> -p <db_password>"
+  echo "Usage: $0 -d <db_name> [-P <db_port>] -h <db_host> [-u <db_username>] [-p <db_password>]"
   exit 1
 }
 
 # Initialize variables with default values
 DB_HOST="localhost"
 DB_PORT="3306"
+DB_NAME=""
+DB_USER=""
+DB_PASS=""
 
 # Parse command line options
 while getopts ":h:P:d:u:p:" opt; do
@@ -21,6 +24,13 @@ while getopts ":h:P:d:u:p:" opt; do
     \?) echo "Invalid option: -$OPTARG" ; usage ;;
   esac
 done
+
+# Check if the config file for the provided database name exists
+CONFIG_FILE="${DB_NAME}.config"
+
+if [ -f "$CONFIG_FILE" ]; then
+  source "$CONFIG_FILE"
+fi
 
 # Check if required options are provided
 if [ -z "$DB_NAME" ] || [ -z "$DB_USER" ] || [ -z "$DB_PASS" ]; then

@@ -25,6 +25,12 @@ if [ -z "$DB_NAME" ] || [ -z "$AGE_IN_DAYS" ]; then
   usage
 fi
 
+# Validate that AGE_IN_DAYS is an integer
+if ! [[ "$AGE_IN_DAYS" =~ ^-?[0-9]+$ ]]; then
+  echo "Error: Age in days must be an integer"
+  usage
+fi
+
 # Define the backup directory
 BACKUP_DIR="$DB_NAME"
 
@@ -38,11 +44,14 @@ fi
 CUTOFF_DATE=$(date -d "$AGE_IN_DAYS days ago" +"%Y-%m-%d %H:%M:%S")
 
 # Delete backup folders older than the specified age
-find "$BACKUP_DIR" -maxdepth 1 -type d | while read folder; do
-  folder_date=$(stat -c %Y "$folder")
-  cutoff_epoch=$(date -d "$CUTOFF_DATE" +"%s")
-  if [ "$folder_date" -lt "$cutoff_epoch" ]; then
-    echo "Deleting backup folder: $folder"
-    rm -r "$folder"
+# Exclude the base directory from the list of folders to prevent its deletion
+find "$BACKUP_DIR" -mindepth 1 -maxdepth 1 -type d | while read folder; do
+  if [ -d "$folder" ]; then # Ensure the folder exists
+    folder_date=$(stat -c %Y "$folder" 2>/dev/null) # Suppress error output
+    cutoff_epoch=$(date -d "$CUTOFF_DATE" +"%s")
+    if [ -n "$folder_date" ] && [ "$folder_date" -lt "$cutoff_epoch" ]; then
+      echo "Deleting backup folder: $folder"
+      rm -r "$folder"
+    fi
   fi
 done
